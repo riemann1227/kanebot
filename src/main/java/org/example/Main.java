@@ -61,7 +61,7 @@ public class Main extends ListenerAdapter{
 
 
         System.out.println(getStockData("삼성전자"));
-        final String TOKEN = "OTMyMjgxMTkxNzAzNDEyNzM2.GKQKm0.yNvWioc6Dta1JJ3nYlAU4cgib-dKhnqDRdlygQ";
+        final String TOKEN = "";
         System.out.println("Kanebot Started!");
         JDA jda = JDABuilder.createDefault(TOKEN)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
@@ -520,8 +520,16 @@ public class Main extends ListenerAdapter{
                     long money = getAccountBalance(event.getMessage().getAuthor().getId());
                     count = money / cost;
                 }
+                else if(parsed[2].equals("반매수")){
+                    long money = getAccountBalance(event.getMessage().getAuthor().getId());
+                    count = (money / cost) / 2;
+                }
                 else if(parsed[2].equals("풀매도")){
                     count = getOneStock(event.getMessage().getAuthor().getId(), stock);
+                }
+                else if(parsed[2].equals("반매도")){
+                    count = getOneStock(event.getMessage().getAuthor().getId(), stock);
+                    count = count / 2;
                 }
                 else{
                     count = Long.parseLong(parsed[2]);
