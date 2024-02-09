@@ -46,7 +46,7 @@ import java.util.TimerTask;
 
 public class Main extends ListenerAdapter{
 
-    private static final String[] stocksList = {"삼성전자", "동경미오림시계", "테슬라", "올인시계", "APPLE", "SK하이닉스"};
+    private static final String[] stocksList = {"삼성전자", "토요타자동차", "테슬라", "미쓰비시은행", "APPLE", "SK하이닉스"};
     private static long[] stockChangeList = {0, 0, 0, 0, 0, 0};
     private static final String[] propertyList = {"시그니엘", "진우빌라", "반포자이", "충주2차푸르지오", "충주남산"};
 
@@ -56,9 +56,9 @@ public class Main extends ListenerAdapter{
     public static long givePropertyConst = 100000;
     public static final int seconds = 60;
 
+
+
     public static void main(String[] args) throws Exception{
-
-
 
         System.out.println(getStockData("삼성전자"));
         final String TOKEN = "";
@@ -66,6 +66,7 @@ public class Main extends ListenerAdapter{
         JDA jda = JDABuilder.createDefault(TOKEN)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .build();
+
 
         jda.addEventListener(new Main());
 
@@ -216,6 +217,22 @@ public class Main extends ListenerAdapter{
         WriteData(obj, "account");
     }
 
+    public static void changeUserName(String uid, String name){
+        JSONObject obj = ReadData("account_name");
+        obj.put(uid, name);
+        WriteData(obj, "account_name");
+    }
+
+    public static String getUserName(String uid){
+        JSONObject obj = ReadData("account_name");
+        if(obj.containsKey(uid)){
+            return (String) obj.get(uid);
+        }
+        else{
+            return "이름없음";
+        }
+    }
+
     public static int sendMonetToAccount(String uid1, String uid2, long cost){
         JSONObject obj = ReadData("account");
         if(obj.containsKey(uid1) && obj.containsKey(uid2)){
@@ -265,6 +282,17 @@ public class Main extends ListenerAdapter{
             user_stock.put(name, count);
             obj.put(uid, user_stock);
             WriteData(obj, "user_stocks");
+        }
+    }
+
+    public static void clearUserStocks(String uid){
+        JSONObject obj = ReadData("user_stocks");
+        if(obj.containsKey(uid)){
+            obj.remove(uid);
+            WriteData(obj, "user_stocks");
+        }
+        else{
+            return;
         }
     }
 
@@ -336,6 +364,7 @@ public class Main extends ListenerAdapter{
         JSONObject obj = new JSONObject();
         return obj;
     }
+
     public void onMessageReceived(MessageReceivedEvent event) {
         String msg = event.getMessage().getContentDisplay();
         String[] parsed = msg.split(" ");
@@ -349,11 +378,13 @@ public class Main extends ListenerAdapter{
             embed.addField("!거래 종목명 거래량", "주식을 거래 할 수 있다맨이야\n거래량에 풀매수 또는 풀매도를 입력하면 전체 거래를 진행 할 수 있다맨이야", false);
             embed.addField("!내계좌", "내 계좌 현황을 알려준다 맨이야", false);
             embed.addField("!계좌개설", "계좌 를! 개설 할 수 있다맨이야", false);
-            embed.addField("!주식시간", "다음 변동까지 남은 시간 를! 알려준다 맨이야", false);
+            embed.addField("!시간 or !주식시간", "다음 변동까지 남은 시간 를! 알려준다 맨이야", false);
             embed.addField("!송금 금액", "사용자에게 송금 를! 할 수 있다 맨이야", false);
             embed.addField("!부동산", "현재 부동산 현황을 보여준다맨이야", false);
             embed.addField("!내부동산", "현재 내 부동산 현황을 보여준다맨이야", false);
             embed.addField("!부동산거래 부동산명 거래량", "부동산을 거래 할 수 있다맨이야\n거래량에 풀매수 또는 풀매도를 입력하면 전체 거래를 진행 할 수 있다맨이야", false);
+            embed.addField("!모두", "모두의 계좌 정보 를! 알 수 있다 맨이야", false);
+            embed.addField("!이름변경 변경할이름", "모두에서 보여지는 이름을 변경한다 맨이야.\n아무것도 입력하지 않으면 기본 이름으로 초기화 된다 맨이야", false);
             embed.setColor(0x42b580);
             event.getMessage().reply("").setEmbeds(embed.build()).queue();
         }
@@ -372,6 +403,18 @@ public class Main extends ListenerAdapter{
         }
         if(cmd.equals("!성준이는")){
             event.getMessage().reply("게이다").queue();
+        }
+        if(cmd.equals("!가즈아")){
+            event.getMessage().reply("https://tenor.com/view/%EC%BC%80%EC%9D%B8-%EC%BC%80%EC%9D%B8tv-kane-%EB%82%98%EB%8A%94%ED%96%89%EB%B3%B5%ED%95%A9%EB%8B%88%EB%8B%A4-%ED%95%9C%ED%99%94%EC%9D%B4%EA%B8%80%EC%8A%A4-gif-22225637").queue();
+        }
+        if(cmd.equals("!짜증")){
+            event.getMessage().reply("https://tenor.com/view/%EC%BC%80%EC%9D%B8-%EC%BC%80%EC%9D%B8tv-kane-gif-22225973").queue();
+        }
+        if(cmd.equals("!뭉탱이")){
+            event.getMessage().reply("https://tenor.com/view/%EC%BC%80%EC%9D%B8-%EC%A3%84%EC%86%A1%ED%95%A9%EB%8B%88%EB%8B%A4-kane-tv-kane-%EB%AD%89%ED%83%B1%EC%9D%B4-gif-19912401").queue();
+        }
+        if(cmd.equals("!조이고")){
+            event.getMessage().reply("https://tenor.com/view/%EC%BC%80%EC%9D%B8-%EC%BC%80%EC%9D%B8%EC%9D%B8-gif-24465915").queue();
         }
         if(cmd.equals("!안녕하살법")){
             event.getMessage().reply("https://tenor.com/view/chika-fujiwara-gif-22892834").queue();
@@ -503,7 +546,7 @@ public class Main extends ListenerAdapter{
 
             }
             embed.addField("총 보유가", String.format("%s₩", decFormat.format(total)), false);
-            embed.addField("월 수령액", String.format("%s₩", decFormat.format(total / givePropertyConst)), false);
+            embed.addField("쿨당 수령액", String.format("%s₩", decFormat.format(total / givePropertyConst)), false);
             event.getMessage().reply("").setEmbeds(embed.build()).queue();
         }
         if(cmd.equals("!거래")){
@@ -589,7 +632,7 @@ public class Main extends ListenerAdapter{
                     embed.addField("현재 거래가", String.format("%s₩", decFormat.format(cost)), false);
                     embed.addField("거래량", String.format("%s채",decFormat.format(count)), false);
                     embed.addField("거래액", String.format("%s₩", decFormat.format(cost * count)), false);
-                    embed.addField("월 수령액", String.format("%s₩", decFormat.format(cost * count / givePropertyConst)), false);
+                    embed.addField("쿨당 수령액", String.format("%s₩", decFormat.format(cost * count / givePropertyConst)), false);
                     Button buttonBuy = Button.success("buyProperty_"+property+"_"+Long.toString(count), "구매");
                     Button buttonSell = Button.danger("sellProperty_"+property+"_"+Long.toString(count), "판매");
                     event.getMessage().reply("").setEmbeds(embed.build()).setActionRow(buttonBuy, buttonSell).queue();
@@ -597,7 +640,7 @@ public class Main extends ListenerAdapter{
             }
         }
 
-        if(cmd.equals("!주식시간")){
+        if(cmd.equals("!주식시간") || cmd.equals("!시간")){
             event.getMessage().reply(String.format("주식 갱신까지 남은 시간은 %d 초 입니다!", (seconds - (timeMoved % seconds)))).queue();
         }
         if(cmd.equals("!계좌개설")){
@@ -631,6 +674,46 @@ public class Main extends ListenerAdapter{
                 event.getMessage().reply("송금 받을 사람을 선택하세요(선택 후 변경은 불가능합니다)").addActionRow(
                         EntitySelectMenu.create("sendMoney_"+parsed[1], EntitySelectMenu.SelectTarget.USER)
                                 .build()).queue();
+            }
+        }
+        if(cmd.equals("!개인회생")){
+            if(parsed.length < 2){
+                event.getMessage().reply("개인 회생을 정말로 진행하십니까?\n보유한 주식이 모두 사라지며 계좌 잔고는 50,000₩ 으로 변경됩니다.\n동의시 \"!개인회생 진행\" 으로 이어서 진행하세요").queue();
+            }
+            else{
+                if(parsed[1].equals("진행")){
+                    clearUserStocks(event.getMessage().getAuthor().getId());
+                    changeBalance(event.getMessage().getAuthor().getId(), 50000);
+                    EmbedBuilder embed = new EmbedBuilder();
+                    embed.setTitle(event.getMessage().getAuthor().getName() + " 님의 개인 회생에 성공하였습니다");embed.addField("보유한 주식이 모두 청산되었으며, 계좌의 잔고는 50,000₩ 으로 변경되었습니다", "(취소는 불가능 합니다)", false);
+                    event.getMessage().reply("").setEmbeds(embed.build()).queue();
+                }
+                else{
+                    event.getMessage().reply("계속 진행하려면 \"!개인회생 진행\" 을 입력하세요.").queue();
+                }
+            }
+        }
+        if(cmd.equals("!모두")){
+            JSONObject obj = ReadData("account");
+            Iterator i = obj.keySet().iterator();
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.setTitle("모두의 계좌 정보");
+            DecimalFormat decFormat = new DecimalFormat("###,###");
+            while(i.hasNext())
+            {
+                String userId = i.next().toString();
+                embed.addField("소유자: " + getUserName(userId), decFormat.format((long) obj.get(userId)) + "₩",false);
+            }
+            event.getMessage().reply("").setEmbeds(embed.build()).queue();
+        }
+        if(cmd.equals("!이름변경")){
+            if(parsed.length < 2){
+                changeUserName(event.getMessage().getAuthor().getId(), event.getMessage().getAuthor().getName());
+                event.getMessage().reply(event.getMessage().getAuthor().getName() + "(으)로 이름 초기화 완료!").queue();
+            }
+            else{
+                changeUserName(event.getMessage().getAuthor().getId(), parsed[1]);
+                event.getMessage().reply(parsed[1] + "(으)로 이름 변경 완료!").queue();
             }
         }
     }
@@ -726,9 +809,8 @@ public class Main extends ListenerAdapter{
                 event.reply("이미 개설된 계좌입니다!").queue();
             }
             else {
-                System.out.println(event.getUser().getAvatarId());
-                System.out.println(event.getUser().getName());
                 makeAccount(uid);
+                changeUserName(uid, event.getUser().getName());
                 event.reply("자유입출금계좌 개설 완료!").queue();
             }
         }
